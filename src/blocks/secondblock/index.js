@@ -26,7 +26,6 @@ registerBlockType("mytheme-blocks/secondblock", {
         return <p className={className}>Editor</p>;
     },
     save: () => {
-        
         return <p>Saved Content </p>;
     }
 });

@@ -12,10 +12,12 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "eslint src"
+            "pre-commit": "lint-staged"
         }
     },
-
+    "lint-staged": {
+        "src/**/*.js": "eslint"
+    },
     "author": "",
     "license": "ISC",
     "dependencies": {
