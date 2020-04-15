@@ -22,7 +22,6 @@ registerBlockType("mytheme-blocks/secondblock", {
     ),
     keywords: [__("Photo", "mytheme-blocks"), __("Tractor", "mytheme-blocks")],
     edit: ({ className }) => {
-        
         return <p className={className}>Editor</p>;
     },
     save: () => {
