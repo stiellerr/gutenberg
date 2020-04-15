@@ -5,6 +5,7 @@ import { __ } from "@wordpress/i18n";
 import { registerBlockType } from "@wordpress/blocks";
 import React from "react";
 
+//console.log("hi");
 //const { registerBlockType } = wp.blocks;
 //const { __ } = wp.i18n;
 
@@ -21,7 +22,7 @@ registerBlockType("mytheme-blocks/secondblock", {
     ),
     keywords: [__("Photo", "mytheme-blocks"), __("Tractor", "mytheme-blocks")],
     edit: ({ className }) => {
-        //console.log(props);
+        
         return <p className={className}>Editor</p>;
     },
     save: () => {
