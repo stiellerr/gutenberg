@@ -16,10 +16,7 @@
         }
     },
     "lint-staged": {
-        "**/*.{js,json,css,scss}": [
-            "prettier --write",
-            "git add"
-        ]
+        "**/*.{js,json,css,scss}": "prettier --write"
     },
     "author": "",
     "license": "ISC",
