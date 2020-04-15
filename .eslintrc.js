@@ -19,8 +19,7 @@ module.exports = {
     },
     plugins: ["react"],
     rules: {
-        //"no-console": "error",
-        //"react/display-name": "warn",
+        "react/display-name": "warn",
         "react/prop-types": "warn"
     }
 };
