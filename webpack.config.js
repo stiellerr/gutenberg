@@ -82,9 +82,11 @@ module.exports = (env, argv) => {
         },
         externals: {
             jquery: "jQuery",
+            react: ["wp", "element"],
             "@wordpress/blocks": ["wp", "blocks"],
-            "@wordpress/i18n": ["wp", "i18n"],
-            react: ["wp", "element"]
+            "@wordpress/block-editor": ["wp", "blockEditor"],
+            "@wordpress/components": ["wp", "components"],
+            "@wordpress/editor": ["wp", "editor"]
         }
     };
     return config;

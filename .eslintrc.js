@@ -19,7 +19,7 @@ module.exports = {
     },
     plugins: ["react"],
     rules: {
-        "react/display-name": "warn",
-        "react/prop-types": "warn"
+        "react/display-name": "off",
+        "react/prop-types": "off"
     }
 };
