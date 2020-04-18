@@ -11,6 +11,41 @@ if( ! defined('ABSPATH') ){
     exit;
 }
 
+// useful function for witing to the log
+if ( ! function_exists('write_log')) {
+    function write_log ( $log )  {
+       if ( is_array( $log ) || is_object( $log ) ) {
+          error_log( print_r( $log, true ) );
+       } else {
+          error_log( $log );
+       }
+    }
+ }
+
+// its is possible to pass the post and only display for certain types...
+function mytheme_blocks_categories( $categories, $post ) { 
+
+    //write_log($post);
+
+    //this is how you get the page template
+    //write_log( get_page_template_slug( $post->ID ) );
+
+    return array_merge(
+        $categories,
+        array(
+            array(
+                'slug' => 'mytheme-cetegory',
+                'title' => __('My Theme Category', "mytheme-blocks"),
+                'icon' => 'wordpress'
+            )
+        )
+    );
+}
+
+
+// 10 is the priority, 2 is the amount of arguments
+add_filter('block_categories', 'mytheme_blocks_categories', 10, 2 );
+
 function mytheme_blocks_register_block_type( $block, $options = array() ) {
     register_block_type(
         'mytheme-blocks/' . $block,

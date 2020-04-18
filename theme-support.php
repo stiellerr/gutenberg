@@ -10,6 +10,16 @@ function firsttheme_theme_support() {
         'editor-color-palette',
         array(
             array(
+                'name'  => __( 'Greyish Purple', 'twentynineteen' ),
+                'slug'  => 'greyish-purple',
+                'color' => '#524d5b'
+            ),
+            array(
+                'name'  => __( 'Pale Green', 'twentynineteen' ),
+                'slug'  => 'pale-green',
+                'color' => '#9dd3aB'
+            ),
+            array(
                 'name'  => 'default' === get_theme_mod( 'primary_color' ) ? __( 'Blue', 'twentynineteen' ) : null,
                 'slug'  => 'primary',
                 //'color' => twentynineteen_hsl_hex( 'default' === get_theme_mod( 'primary_color' ) ? 199 : get_theme_mod( 'primary_color_hue', 199 ), 100, 33 ),
@@ -70,4 +80,64 @@ body {
 
 .wp-block[data-align="full"] {
 	max-width: none;
+}
+
+// code to hide meta box for certain page template
+/* 
+ * Change Meta Box visibility according to Page Template
+ *
+ * Observation: this example swaps the Featured Image meta box visibility
+ *
+ * Usage:
+ * - adjust $('#postimagediv') to your meta box
+ * - change 'page-portfolio.php' to your template's filename
+ * - remove the console.log outputs
+ */
+
+add_action('admin_head', 'wpse_50092_script_enqueuer');
+
+function wpse_50092_script_enqueuer() {
+    global $current_screen;
+    if('page' != $current_screen->id) return;
+
+    echo <<<HTML
+        <script type="text/javascript">
+        jQuery(document).ready( function($) {
+
+            /**
+             * Adjust visibility of the meta box at startup
+            */
+            if($('#page_template').val() == 'page-portfolio.php') {
+                // show the meta box
+                $('#postimagediv').show();
+            } else {
+                // hide your meta box
+                $('#postimagediv').hide();
+            }
+
+            // Debug only
+            // - outputs the template filename
+            // - checking for console existance to avoid js errors in non-compliant browsers
+            if (typeof console == "object") 
+                console.log ('default value = ' + $('#page_template').val());
+
+            /**
+             * Live adjustment of the meta box visibility
+            */
+            $('#page_template').live('change', function(){
+                    if($(this).val() == 'page-portfolio.php') {
+                    // show the meta box
+                    $('#postimagediv').show();
+                } else {
+                    // hide your meta box
+                    $('#postimagediv').hide();
+                }
+
+                // Debug only
+                if (typeof console == "object") 
+                    console.log ('live change value = ' + $(this).val());
+            });                 
+        });    
+        </script>
+HTML;
 }

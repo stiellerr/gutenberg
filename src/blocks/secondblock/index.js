@@ -1,16 +1,20 @@
 import "./styles.editor.scss";
 
-import React from "react";
+//import React from "react";
 import { __ } from "@wordpress/i18n";
 import { registerBlockType } from "@wordpress/blocks";
-import { RichText, BlockControls } from "@wordpress/block-editor";
+import { RichText, getColorClassName } from "@wordpress/block-editor";
+import classnames from "classnames";
 //import {  } from "@wordpress/editor";
-import { Toolbar, DropdownMenu } from "@wordpress/components";
+//import { Toolbar, DropdownMenu, PanelBody, ToggleControl, ColorPicker, ColorPalette } from "@wordpress/components";
+//import { alignLeft } from '@wordpress/icons'
+//import AlignmentToolbar from "@wordpress/block-editor/src/components/alignment-toolbar";
+import Edit from "./edit";
 
 registerBlockType("mytheme-blocks/secondblock", {
     title: __("Second Block", "mytheme-blocks"),
     description: __("Our Second Block", "mytheme-blocks"),
-    category: "layout",
+    category: "mytheme-cetegory",
     // matrial io svgg
     icon: (
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -19,111 +23,97 @@ registerBlockType("mytheme-blocks/secondblock", {
         </svg>
     ),
     keywords: [__("Photo", "mytheme-blocks"), __("Tractor", "mytheme-blocks")],
+
+    styles: [
+        {
+            name: "rounded",
+            label: __("Rounded", "mytheme-blocks"),
+            isDefault: true
+        },
+        {
+            name: "outline",
+            label: __("Outline", "mytheme-blocks")
+        },
+        {
+            name: "squared",
+            label: __("Squared", "mytheme-blocks")
+        }
+    ],
+
     attributes: {
         content: {
             type: "string",
             source: "html",
             selector: "p"
+        },
+        alignment: {
+            type: "string"
+        },
+        backgroundColor: {
+            type: "string"
+        },
+        textColor: {
+            type: "string"
+        },
+        customBackgroundColor: {
+            type: "string"
+        },
+        customTextColor: {
+            type: "string"
+        },
+        shadow: {
+            type: "boolean",
+            default: false
+        },
+        shadowOpactiy: {
+            type: "number",
+            default: 0.3
         }
     },
+    edit: Edit,
+    save: ({ attributes }) => {
+        const {
+            content,
+            alignment,
+            backgroundColor,
+            textColor,
+            customBackgroundColor,
+            customTextColor,
+            shadow,
+            shadowOpactiy
+        } = attributes;
 
-    edit: ({ className, attributes, setAttributes }) => {
-        console.log(attributes);
-        const { content } = attributes;
-
-        const onChangeContent = content => {
-            setAttributes({ content });
-        };
+        const backgroundClass = getColorClassName("background-color", backgroundColor);
+        const textClass = getColorClassName("color", textColor);
+        /*
+        let classes = ''
+        if ( backgroundClass ) {
+            classes += backgroundClass;
+        }
+        if ( testClass ) {
+            classes += testClass;
+        }*/
+        // or this is an ulternative to the above
+        const classes = classnames({
+            //'classname': true
+            [backgroundClass]: backgroundClass,
+            [textClass]: textClass,
+            "has-shadow": shadow,
+            //below ` is used not '
+            [`shadow-opacity-${shadowOpactiy * 100}`]: shadowOpactiy
+        });
 
         return (
-            <>
-                <BlockControls
-                    controls={[
-                        {
-                            icon: "wordpress",
-                            title: __("test", "mytheme-blocks"),
-                            onClick: () => alert(true),
-                            isActive: true
-                        },
-                        {
-                            icon: "wordpress",
-                            title: __("test", "mytheme-blocks"),
-                            onClick: () => alert(true),
-                            isActive: false
-                        }
-                    ]}
-                >
-                    <Toolbar
-                        isCollapsed
-                        controls={[
-                            {
-                                icon: "wordpress",
-                                title: __("test", "mytheme-blocks"),
-                                onClick: () => alert(true),
-                                isActive: true
-                            },
-                            {
-                                icon: "wordpress",
-                                title: __("test", "mytheme-blocks"),
-                                onClick: () => alert(true),
-                                isActive: false
-                            }
-                        ]}
-                    />
-
-                    <Toolbar
-                        //isCollapsed
-                        controls={[
-                            {
-                                icon: "wordpress",
-                                title: __("test", "mytheme-blocks"),
-                                onClick: () => alert(true),
-                                isActive: true
-                            },
-                            {
-                                icon: "wordpress",
-                                title: __("test", "mytheme-blocks"),
-                                onClick: () => alert(true),
-                                isActive: false
-                            }
-                        ]}
-                    />
-                    {content && content.length > 0 && (
-                        <Toolbar>
-                            <DropdownMenu
-                                icon="editor-table"
-                                label={__("test", "mytheme-blocks")}
-                                controls={[
-                                    {
-                                        icon: "wordpress",
-                                        title: __("test", "mytheme-blocks"),
-                                        onClick: () => alert(true),
-                                        isActive: true
-                                    },
-                                    {
-                                        icon: "wordpress",
-                                        title: __("test", "mytheme-blocks"),
-                                        onClick: () => alert(true),
-                                        isActive: false
-                                    }
-                                ]}
-                            />
-                        </Toolbar>
-                    )}
-                </BlockControls>
-                <RichText
-                    tagName="p"
-                    className={className}
-                    onChange={onChangeContent}
-                    value={content}
-                    allowedFormats={["core/bold"]}
-                />
-            </>
+            <RichText.Content
+                tagName="p"
+                className={classes}
+                value={content}
+                style={{
+                    textAlign: alignment,
+                    backgroundColor: backgroundClass ? undefined : customBackgroundColor,
+                    color: textClass ? undefined : customTextColor
+                }}
+            />
         );
-    },
-    save: ({ attributes }) => {
-        const { content } = attributes;
-
-        return <RichText.Content tagName="p" value={content} />;
     }
 });
