@@ -14,7 +14,7 @@ import {
     DropdownMenu,
     PanelBody,
     ToggleControl,
-    ColorPalette,
+    //ColorPalette,
     RangeControl
 } from "@wordpress/components";
 import classnames from "classnames";
@@ -47,8 +47,8 @@ class Edit extends Component {
         this.props.setAttributes({ content });
     };
 
-    onChangeAlignment = alignment => {
-        this.props.setAttributes({ alignment });
+    onChangeAlignment = textAlignment => {
+        this.props.setAttributes({ textAlignment });
     };
 
     /*
@@ -76,7 +76,7 @@ class Edit extends Component {
             backgroundColor,
             textColor
         } = this.props;
-        const { content, alignment, shadow, shadowOpactiy } = attributes;
+        const { content, textAlignment, shadow, shadowOpactiy } = attributes;
 
         const classes = classnames(className, {
             "has-shadow": shadow,
@@ -165,7 +165,7 @@ class Edit extends Component {
                     ]}
                 >
                     <AlignmentToolbar
-                        value={alignment}
+                        value={textAlignment}
                         onChange={this.onChangeAlignment}
                         alignmentControls={DEFAULT_ALIGNMENT_CONTROLS}
                     />
@@ -229,13 +229,13 @@ class Edit extends Component {
                     )}
                 </BlockControls>
                 <RichText
-                    tagName="p"
+                    tagName="h4"
                     className={classes}
                     onChange={this.onChangeContent}
                     value={content}
                     allowedFormats={["core/bold"]}
                     style={{
-                        textAlign: alignment,
+                        textAlign: textAlignment,
                         backgroundColor: backgroundColor.color,
                         color: textColor.color
                     }}

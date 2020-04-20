@@ -2,14 +2,49 @@ import "./styles.editor.scss";
 
 //import React from "react";
 import { __ } from "@wordpress/i18n";
-import { registerBlockType } from "@wordpress/blocks";
+import { registerBlockType, createBlock } from "@wordpress/blocks";
 import { RichText, getColorClassName } from "@wordpress/block-editor";
 import classnames from "classnames";
+import { omit } from "lodash";
 //import {  } from "@wordpress/editor";
 //import { Toolbar, DropdownMenu, PanelBody, ToggleControl, ColorPicker, ColorPalette } from "@wordpress/components";
 //import { alignLeft } from '@wordpress/icons'
 //import AlignmentToolbar from "@wordpress/block-editor/src/components/alignment-toolbar";
 import Edit from "./edit";
+
+const attributes = {
+    content: {
+        type: "string",
+        source: "html",
+        selector: "h4"
+    },
+    Alignment: {
+        type: "string"
+    },
+    textAlignment: {
+        type: "string"
+    },
+    backgroundColor: {
+        type: "string"
+    },
+    textColor: {
+        type: "string"
+    },
+    customBackgroundColor: {
+        type: "string"
+    },
+    customTextColor: {
+        type: "string"
+    },
+    shadow: {
+        type: "boolean",
+        default: false
+    },
+    shadowOpactiy: {
+        type: "number",
+        default: 0.3
+    }
+};
 
 registerBlockType("mytheme-blocks/secondblock", {
     title: __("Second Block", "mytheme-blocks"),
@@ -40,41 +75,170 @@ registerBlockType("mytheme-blocks/secondblock", {
         }
     ],
 
-    attributes: {
-        content: {
-            type: "string",
-            source: "html",
-            selector: "p"
+    //if key and variable are the same you can just specify 1
+    attributes,
+    // this is used when you modify your save block, worpress requires a recompile but this allows you to retain olf vesions and it will read them and work out how to compile your changes on the fly...
+
+    deprecated: [
+        {
+            attributes: omit(
+                {
+                    ...attributes,
+                    alignment: {
+                        type: "string"
+                    }
+                },
+                ["textAlignment"]
+            ),
+
+            migrate: attributes => {
+                return omit(
+                    {
+                        ...attributes,
+                        textAlignment: attributes.alignment
+                    },
+                    ["alignment"]
+                );
+            },
+
+            save: ({ attributes }) => {
+                const {
+                    content,
+                    alignment,
+                    backgroundColor,
+                    textColor,
+                    customBackgroundColor,
+                    customTextColor,
+                    shadow,
+                    shadowOpactiy
+                } = attributes;
+
+                const backgroundClass = getColorClassName("background-color", backgroundColor);
+                const textClass = getColorClassName("color", textColor);
+                /*
+                let classes = ''
+                if ( backgroundClass ) {
+                    classes += backgroundClass;
+                }
+                if ( testClass ) {
+                    classes += testClass;
+                }*/
+                // or this is an ulternative to the above
+                const classes = classnames({
+                    //'classname': true
+                    [backgroundClass]: backgroundClass,
+                    [textClass]: textClass,
+                    "has-shadow": shadow,
+                    //below ` is used not '
+                    [`shadow-opacity-${shadowOpactiy * 100}`]: shadowOpactiy
+                });
+
+                return (
+                    <RichText.Content
+                        tagName="h4"
+                        className={classes}
+                        value={content}
+                        style={{
+                            textAlign: alignment,
+                            backgroundColor: backgroundClass ? undefined : customBackgroundColor,
+                            color: textClass ? undefined : customTextColor
+                        }}
+                    />
+                );
+            }
         },
-        alignment: {
-            type: "string"
-        },
-        backgroundColor: {
-            type: "string"
-        },
-        textColor: {
-            type: "string"
-        },
-        customBackgroundColor: {
-            type: "string"
-        },
-        customTextColor: {
-            type: "string"
-        },
-        shadow: {
-            type: "boolean",
-            default: false
-        },
-        shadowOpactiy: {
-            type: "number",
-            default: 0.3
+        {
+            //supports (if used) @ attritubes keys and values have to be added if you didnt change them.
+            attributes: {
+                ...attributes,
+                content: {
+                    type: "string",
+                    source: "html",
+                    selector: "p"
+                }
+            },
+            save: ({ attributes }) => {
+                const {
+                    content,
+                    alignment,
+                    backgroundColor,
+                    textColor,
+                    customBackgroundColor,
+                    customTextColor,
+                    shadow,
+                    shadowOpactiy
+                } = attributes;
+
+                const backgroundClass = getColorClassName("background-color", backgroundColor);
+                const textClass = getColorClassName("color", textColor);
+
+                const classes = classnames({
+                    //'classname': true
+                    [backgroundClass]: backgroundClass,
+                    [textClass]: textClass,
+                    "has-shadow": shadow,
+                    //below ` is used not '
+                    [`shadow-opacity-${shadowOpactiy * 100}`]: shadowOpactiy
+                });
+
+                return (
+                    <RichText.Content
+                        tagName="p"
+                        className={classes}
+                        value={content}
+                        style={{
+                            textAlign: alignment,
+                            backgroundColor: backgroundClass ? undefined : customBackgroundColor,
+                            color: textClass ? undefined : customTextColor
+                        }}
+                    />
+                );
+            }
         }
+    ],
+    transforms: {
+        from: [
+            {
+                type: "block",
+                blocks: ["core/paragraph"],
+                transform: ({ content, align }) => {
+                    return createBlock("mytheme-blocks/secondblock", {
+                        content: content,
+                        textAlignment: align
+                    });
+                }
+            },
+            {
+                type: "prefix",
+                prefix: "#",
+                transform: () => {
+                    return createBlock("mytheme-blocks/secondblock");
+                }
+            }
+        ],
+        to: [
+            {
+                type: "block",
+                blocks: ["core/paragraph"],
+                isMatch: ({ content }) => {
+                    if (content) return true;
+                    return false;
+                },
+                transform: ({ content, textAlignment }) => {
+                    return createBlock("core/paragraph", {
+                        content: content,
+                        align: textAlignment
+                    });
+                }
+            }
+        ]
     },
+
     edit: Edit,
     save: ({ attributes }) => {
         const {
             content,
-            alignment,
+            textAlignment,
             backgroundColor,
             textColor,
             customBackgroundColor,
@@ -105,11 +269,11 @@ registerBlockType("mytheme-blocks/secondblock", {
 
         return (
             <RichText.Content
-                tagName="p"
+                tagName="h4"
                 className={classes}
                 value={content}
                 style={{
-                    textAlign: alignment,
+                    textAlign: textAlignment,
                     backgroundColor: backgroundClass ? undefined : customBackgroundColor,
                     color: textClass ? undefined : customTextColor
                 }}

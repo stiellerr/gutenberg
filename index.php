@@ -66,7 +66,7 @@ function mytheme_blocks_register() {
     wp_register_script(
         'mytheme-blocks-editor-script',
         plugins_url('dist/editor.js', __FILE__),
-        array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components')
+        array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components', 'lodash')
     );
 
     wp_register_script(
@@ -84,11 +84,13 @@ function mytheme_blocks_register() {
     wp_register_style(
         'mytheme-blocks-style',
         plugins_url('dist/style.css', __FILE__),
-        array()
+        array('twentynineteen-style', 'twentynineteen-print-style')
     );
 
     mytheme_blocks_register_block_type( 'firstblock' );
     mytheme_blocks_register_block_type( 'secondblock' );
+    mytheme_blocks_register_block_type( 'team-member' );
+    mytheme_blocks_register_block_type( 'team-members' );
 
 }
 

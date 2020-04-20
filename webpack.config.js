@@ -84,6 +84,7 @@ module.exports = (env, argv) => {
         externals: {
             jquery: "jQuery",
             //react: ["wp", "element"],
+            lodash: "lodash",
             "@wordpress/blocks": ["wp", "blocks"],
             "@wordpress/i18n": ["wp", "i18n"],
             "@wordpress/block-editor": ["wp", "blockEditor"],
