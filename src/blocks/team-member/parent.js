@@ -20,6 +20,10 @@ registerBlockType("mytheme-blocks/team-members", {
         __("member", "mytheme-blocks"),
         __("person", "mytheme-blocks")
     ],
+    supports: {
+        html: false,
+        align: ["wide", "full"]
+    },
     attributes,
     edit({ className, attributes, setAttributes }) {
         const { columns } = attributes;
@@ -44,7 +48,7 @@ registerBlockType("mytheme-blocks/team-members", {
                         ["mytheme-blocks/team-member"]
                     ]}
                     //templateLock="all"
-                    templateLock="insert"
+                    //templateLock="insert"
                 />
             </div>
         );

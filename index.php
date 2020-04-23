@@ -66,7 +66,7 @@ function mytheme_blocks_register() {
     wp_register_script(
         'mytheme-blocks-editor-script',
         plugins_url('dist/editor.js', __FILE__),
-        array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components', 'lodash')
+        array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components', 'lodash', 'wp-blob', 'wp-data')
     );
 
     wp_register_script(
@@ -84,7 +84,7 @@ function mytheme_blocks_register() {
     wp_register_style(
         'mytheme-blocks-style',
         plugins_url('dist/style.css', __FILE__),
-        array('twentynineteen-style', 'twentynineteen-print-style')
+        array('wp-editor')
     );
 
     mytheme_blocks_register_block_type( 'firstblock' );

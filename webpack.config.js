@@ -89,7 +89,9 @@ module.exports = (env, argv) => {
             "@wordpress/i18n": ["wp", "i18n"],
             "@wordpress/block-editor": ["wp", "blockEditor"],
             "@wordpress/components": ["wp", "components"],
-            "@wordpress/element": ["wp", "element"]
+            "@wordpress/element": ["wp", "element"],
+            "@wordpress/blob": ["wp", "blob"],
+            "@wordpress/data": ["wp", "data"]
         }
     };
     return config;
